@@ -76,4 +76,38 @@ object GridPath
       case (None,_,_) => {println("out of moves");false}
     }
   }
+
+  // Recursive function that finds all possible solutions without revisiting already visited nodes
+  def printAllPaths(current: Tuple2[Int,Int], end: Tuple2[Int,Int], balance: Int,
+                    grid: Grid[Int], paths: List[Move], visited: List[Tuple2[Int,Int]]): Unit = { 
+
+     // if the move puts us out of bound or goes to an already visited node, lets return Unit 
+    if(boundsCheck(current._1,current._2,grid) || visited.exists(p => p==current)) {
+      ()
+    }
+    // if hop balance is less than or equal to 0, we have run out of moves 
+    else if (balance <= 0) {
+      ()
+    }
+    // if the current node is equal to the end node, we have found a path 
+    else if(current == end) {
+      print("Solution: ") 
+      paths.foreach( x=> print(s"$x ")) 
+      println("") 
+    }
+    // intiante rescursive search with orthogonal movements 
+    else { 
+      val updatedVisits = visited :+ current 
+      // get all adjacent entries 
+      val east = move(current._1,current._2,East) 
+      val west = move(current._1,current._2,West) 
+      val north = move(current._1,current._2,North) 
+      val south = move(current._1,current._2,South) 
+      val newbalance = balance - 1 + grid(current._1)(current._2) 
+      printAllPaths(east,end,newbalance,grid, paths :+ East,updatedVisits) 
+      printAllPaths(west,end,newbalance,grid, paths :+ West,updatedVisits) 
+      printAllPaths(north,end,newbalance,grid, paths :+ North,updatedVisits) 
+      printAllPaths(south,end,newbalance,grid, paths :+ South,updatedVisits) 
+    } 
+  } 
 }
