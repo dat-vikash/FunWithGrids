@@ -1,6 +1,6 @@
 To run use SBT console.
 
-scala'''
+```scala
 
 import GridPath._
 
@@ -17,4 +17,4 @@ validate(grid,moves)
 
 findAllPaths(grid)
 
-'''
+```
