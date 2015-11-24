@@ -88,7 +88,7 @@ object GridPath
   def printAllPaths(current: Tuple2[Int,Int], end: Tuple2[Int,Int], balance: Int, grid: Grid[Int], paths: List[Move], visited: List[Tuple2[Int,Int]]): Unit =
   {
     // if the move puts us out of bound or goes to an already visited node, lets return Unit
-    if(boundsCheck(current._1,current._2,grid) || visited.exists(p => p==current)) {
+    if(boundsCheck(current._1,current._2,grid) || visited.contains(current)) {
       ()
     }
       // if hop balance is less than or equal to 0, we have run out of moves
