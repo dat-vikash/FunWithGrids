@@ -1,6 +1,6 @@
 To run use SBT console.
 
-scala'''
+```scala
 
 import GridPath._
 
@@ -14,4 +14,4 @@ val moves: List[Move] = List(South, South, East, East)
 
 validate(grid,moves)
 
-'''
+```
