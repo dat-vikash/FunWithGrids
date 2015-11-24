@@ -110,4 +110,12 @@ object GridPath
       printAllPaths(south,end,newbalance,grid, paths :+ South,updatedVisits) 
     } 
   } 
+
+  // Function that drives a depth first search for possible solutions 
+  def findAllPaths(grid:Grid[Int]) =   {
+     val paths: List[Move] = List.empty 
+    val balance: Int = grid(0)(0) 
+    val visited: List[Tuple2[Int,Int]] = List.empty 
+    printAllPaths(Tuple2(0,0),Tuple2(grid.length - 1, grid(0).length - 1), balance, grid, paths, visited)  
+  }
 }
