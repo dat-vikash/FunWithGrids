@@ -18,25 +18,26 @@ object GridPath
   val North :Move = "North"
   val South :Move = "South"
 
+  // helper function for returning the next x,y index pair based on a valid move selection 
+  def move(currX: Int, currY: Int, direction: Move): Tuple2[Int,Int] = direction match { 
+   case East =>   (currX + 1, currY) 
+   case West =>   (currX - 1, currY) 
+   case North =>   (currX , currY - 1) 
+   case South =>   (currX , currY + 1) 
+   }
 
+  // helper function to check if we are within grid bounds
+  def boundsCheck(currX: Int, currY: Int, grid: Grid[Int]): Boolean = ( currX >= grid.length || currX < 0) || (currY >= grid(0).length || currY < 0)
+
+  // function to validate a given move list
   def validate(grid: Grid[Int], moves: List[Move]) : Boolean =
   {
     // the end node x and y indexes 
     val END_X_INDEX = grid.length - 1
     val END_Y_INDEX = grid(0).length - 1
 
-    // nested function for returning the next x,y index pair based on a valid move selection
-    def move(currX: Int, currY: Int, direction: Move): Tuple2[Int,Int] = direction match {
-       case East =>   (currX + 1, currY)
-       case West =>   (currX - 1, currY)
-       case North =>   (currX , currY - 1)
-       case South =>   (currX , currY + 1)
-    }
-
     // nested helper function to check if we are at the goal node
     def goalCheck(currX: Int, currY: Int, endX: Int, endY: Int): Boolean = currX == endX && currY == endY
-    // nested helper funciton to check if we are within grid bounds
-    def boundsCheck(currX: Int, currY: Int): Boolean = ( currX >= grid.length || currX < 0) || (currY >= grid(0).length || currY < 0)
 
     // trackers for indexes
    var currX: Int = 0
@@ -56,7 +57,7 @@ object GridPath
             currX = updatedXindex
             currY = updatedYindex
             // update the the hop balance if next move was within bounds
-            boundsCheck(currX,currY) match {
+            boundsCheck(currX,currY,grid) match {
               case false => hopBalance = hopBalance - 1 + grid(currX)(currY)
               case true => exception = Some(new IllegalStateException("out of grid bounds"))
             }
