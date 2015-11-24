@@ -33,33 +33,46 @@ object GridPath
        case South =>   (currX , currY + 1)
     }
 
+    // nested helper function to check if we are at the goal node
+    def goalCheck(currX: Int, currY: Int, endX: Int, endY: Int): Boolean = currX == endX && currY == endY
+    // nested helper funciton to check if we are within grid bounds
+    def boundsCheck(currX: Int, currY: Int): Boolean = ( currX >= grid.length || currX < 0) || (currY >= grid(0).length || currY < 0)
+
     // trackers for indexes
    var currX: Int = 0
    var currY: Int = 0
     // set the initial hop balance to the number of hops for the starting node
    var hopBalance = grid(0)(0)
-    var balanceExceededFlag =   false
+   var exception: Option[Exception] = None
 
-    // iterate through the moves \
+
+    // iterate through the moves
     for (moveDirection <- moves) {
       // check move hopBalance
       hopBalance match {
-          case allowed if allowed > 0 => {
+          case allowed if allowed > 0 && !goalCheck(currX,currY,END_X_INDEX,END_Y_INDEX)  => {
             // do the move and update current index position
             val (updatedXindex,updatedYindex) = move(currX,currY, moveDirection)
             currX = updatedXindex
             currY = updatedYindex
-            // update the the hop balance
-            hopBalance = hopBalance - 1 + grid(currX)(currY)
+            // update the the hop balance if next move was within bounds
+            boundsCheck(currX,currY) match {
+              case false => hopBalance = hopBalance - 1 + grid(currX)(currY)
+              case true => exception = Some(new IllegalStateException("out of grid bounds"))
+            }
            }
-          case notAllowed if notAllowed <= 0  => balanceExceededFlag = true //update flag
+          case allowed if allowed > 0 && goalCheck(currX,currY,END_X_INDEX,END_Y_INDEX)  => {
+            exception =  Some(new IllegalStateException("final cell reached, but you still have moves"))
+          }
+
+          case notAllowed if notAllowed <= 0  => exception =Some(new IllegalStateException("out of hops")) //update flag
        }
    }
     // determine results of run
-    (balanceExceededFlag,currX,currY) match {
-      case (true,_,_) => false
-      case (false,END_X_INDEX,END_Y_INDEX) => true
-      case (fase,_,_) => false
+    (exception,currX,currY) match {
+      case (Some(ex),_,_) => { println(ex.getMessage);false}
+      case (None,END_X_INDEX,END_Y_INDEX) => true
+      case (None,_,_) => {println("out of moves");false}
     }
   }
 }
